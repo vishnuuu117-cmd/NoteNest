@@ -13,6 +13,25 @@
         📖 Available Notes
     </h1>
 
+    <!-- Search Bar -->
+    <form method="GET" class="mb-4">
+
+        <div class="input-group">
+
+            <input type="text"
+                   name="search"
+                   value="{{ request.args.get('search','') }}"
+                   class="form-control"
+                   placeholder="Search by title or subject">
+
+            <button class="btn btn-primary" type="submit">
+                🔍 Search
+            </button>
+
+        </div>
+
+    </form>
+
     <div class="card shadow">
 
         <div class="card-body">
@@ -32,24 +51,43 @@
 
                 <tbody>
 
-                    {% for note in notes %}
-                    <tr>
+                    {% if notes %}
 
-                        <td>{{ note[0] }}</td>
+                        {% for note in notes %}
 
-                        <td>{{ note[1] }}</td>
+                        <tr>
 
-                        <td>{{ note[3] }}</td>
+                            <td>{{ note[0] }}</td>
 
-                        <td>
-                            <a href="/download/{{ note[2] }}"
-                               class="btn btn-primary btn-sm">
-                                Download
-                            </a>
-                        </td>
+                            <td>{{ note[1] }}</td>
 
-                    </tr>
-                    {% endfor %}
+                            <td>{{ note[3] }}</td>
+
+                            <td>
+                                <a href="/download/{{ note[2] }}"
+                                   class="btn btn-success btn-sm">
+                                    Download
+                                </a>
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <tr>
+
+                            <td colspan="4"
+                                class="text-center text-danger fw-bold">
+
+                                No notes found.
+
+                            </td>
+
+                        </tr>
+
+                    {% endif %}
 
                 </tbody>
 
@@ -63,7 +101,9 @@
 
         <a href="/dashboard"
            class="btn btn-secondary">
-            Back to Dashboard
+
+            ← Back to Dashboard
+
         </a>
 
     </div>

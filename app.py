@@ -128,25 +128,46 @@ def notes():
     if "user_id" not in session:
         return redirect("/login")
 
+    search = request.args.get("search")
+
     cur = mysql.connection.cursor()
 
-    cur.execute("""
-        SELECT notes.title,
-               notes.subject,
-               notes.filename,
-               users.name
-        FROM notes
-        JOIN users
-        ON notes.user_id = users.id
-    """)
+    if search:
 
-    all_notes = cur.fetchall()
+        cur.execute("""
+            SELECT notes.title,
+                   notes.subject,
+                   notes.filename,
+                   users.name
+            FROM notes
+            JOIN users
+            ON notes.user_id = users.id
+            WHERE notes.title LIKE %s
+               OR notes.subject LIKE %s
+        """, (
+            "%" + search + "%",
+            "%" + search + "%"
+        ))
+
+    else:
+
+        cur.execute("""
+            SELECT notes.title,
+                   notes.subject,
+                   notes.filename,
+                   users.name
+            FROM notes
+            JOIN users
+            ON notes.user_id = users.id
+        """)
+
+    notes = cur.fetchall()
 
     cur.close()
 
     return render_template(
         "notes.html",
-        notes=all_notes
+        notes=notes
     )
 
 @app.route("/download/<filename>")
